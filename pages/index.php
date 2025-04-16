@@ -90,7 +90,6 @@ $user_bookings = getUserBookings($user_id, $role);
                                 <li>You can rent items</li>
                             <?php endif; ?>
                         </ul>
-                        <a href="edit-profile.php" class="btn btn-primary">Edit Profile</a>
                     </div>
                 </div>
             </section>
@@ -106,7 +105,7 @@ $user_bookings = getUserBookings($user_id, $role);
                             <?php foreach ($user_listings as $listing): ?>
                                 <div class="card">
                                     <?php if ($listing['image_path']): ?>
-                                        <img src="../uploads/<?php echo htmlspecialchars($listing['image_path']); ?>" class="card-img" alt="<?php echo htmlspecialchars($listing['title']); ?>">
+                                        <img src="../pages/uploads/<?php echo htmlspecialchars($listing['image_path']); ?>" class="card-img" alt="<?php echo htmlspecialchars($listing['title']); ?>">
                                     <?php else: ?>
                                         <img src="../assets/images/placeholder.jpg" class="card-img" alt="No image available">
                                     <?php endif; ?>
@@ -118,7 +117,6 @@ $user_bookings = getUserBookings($user_id, $role);
                                         <p class="card-text"><strong>Location:</strong> <?php echo htmlspecialchars($listing['location']); ?></p>
                                         <p class="card-text"><strong>Status:</strong> <?php echo $listing['is_available'] ? 'Available' : 'Not Available'; ?></p>
                                         <div class="btn-group">
-                                            <a href="edit-listing.php?id=<?php echo $listing['id']; ?>" class="btn btn-primary">Edit</a>
                                             <a href="delete-listing.php?id=<?php echo $listing['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this listing?')">Delete</a>
                                         </div>
                                     </div>

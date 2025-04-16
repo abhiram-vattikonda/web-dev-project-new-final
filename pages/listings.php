@@ -106,7 +106,7 @@ $categories = getCategories();
                          data-location="<?php echo htmlspecialchars($listing['location']); ?>"
                          data-price="<?php echo $listing['price_per_day']; ?>">
                         <?php if ($listing['image_path']): ?>
-                            <img src="../uploads/<?php echo htmlspecialchars($listing['image_path']); ?>" class="card-img" alt="<?php echo htmlspecialchars($listing['title']); ?>">
+                            <img src="../pages/uploads/<?php echo htmlspecialchars($listing['image_path']); ?>" class="card-img" alt="<?php echo htmlspecialchars($listing['title']); ?>">
                         <?php else: ?>
                             <img src="../assets/images/placeholder.jpg" class="card-img" alt="No image available">
                         <?php endif; ?>
