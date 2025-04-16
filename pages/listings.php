@@ -24,135 +24,162 @@ $categories = getCategories();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <nav class="navbar">
-            <a href="listings.php" class="logo">RentalPlatform</a>
-            <div class="nav-links">
-                <a href="listings.php">Listings</a>
-                <a href="about.php">About</a>
-                <a href="contact.php">Contact</a>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+        <a class="navbar-brand" href="listings.php">RentalPlatform</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="listings.php">Listings</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
                 <?php if (isLoggedIn()): ?>
-                    <a href="index.php">Dashboard</a>
-                    <a href="logout.php">Logout</a>
+                    <li class="nav-item"><a class="nav-link" href="index.php">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
                 <?php else: ?>
-                    <a href="login.php">Login</a>
-                    <a href="register.php" class="btn btn-primary">Register</a>
+                    <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
+                    <li class="nav-item"><a class="btn btn-primary" href="register.php">Register</a></li>
                 <?php endif; ?>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Filters -->
-    <section class="container my-4">
-        <div class="card">
-            <div class="card-body">
-                <h3>Filter Listings</h3>
-                <form id="filter-form" method="GET" action="">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group mb-3">
-                                <label for="category-filter">Category</label>
-                                <select class="form-control" id="category-filter" name="category">
-                                    <option value="">All Categories</option>
-                                    <?php foreach ($categories as $category): ?>
-                                        <option value="<?php echo $category['id']; ?>" <?php echo $category_id == $category['id'] ? 'selected' : ''; ?>>
-                                            <?php echo htmlspecialchars($category['name']); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group mb-3">
-                                <label for="location-filter">Location</label>
-                                <input type="text" class="form-control" id="location-filter" name="location" value="<?php echo htmlspecialchars($location ?? ''); ?>" placeholder="Enter location">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group mb-3">
-                                <label for="min-price-filter">Min Price</label>
-                                <input type="number" class="form-control" id="min-price-filter" name="min_price" value="<?php echo $min_price ?? ''; ?>" placeholder="Min price">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group mb-3">
-                                <label for="max-price-filter">Max Price</label>
-                                <input type="number" class="form-control" id="max-price-filter" name="max_price" value="<?php echo $max_price ?? ''; ?>" placeholder="Max price">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Apply Filters</button>
-                        <a href="listings.php" class="btn btn-secondary">Clear Filters</a>
-                    </div>
-                </form>
-            </div>
+            </ul>
         </div>
-    </section>
+    </nav>
+</header>
 
-    <!-- Listings -->
-    <section class="container my-4">
-        <h2 class="mb-4">Available Listings</h2>
-        <div class="grid">
-            <?php if (empty($listings)): ?>
-                <div class="col-12">
-                    <div class="alert alert-info">No listings found matching your criteria.</div>
+<!-- Filter Form -->
+<div class="container my-4">
+    <div class="card p-4">
+        <h3>Filter Listings</h3>
+        <form method="GET" action="">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="category">Category</label>
+                    <select name="category" class="form-control">
+                        <option value="">All Categories</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?= $category['id'] ?>" <?= $category_id == $category['id'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($category['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
-            <?php else: ?>
-                <?php foreach ($listings as $listing): ?>
-                    <div class="card listing-card" 
-                         data-category="<?php echo $listing['category_id']; ?>"
-                         data-location="<?php echo htmlspecialchars($listing['location']); ?>"
-                         data-price="<?php echo $listing['price_per_day']; ?>">
-                        <?php if ($listing['image_path']): ?>
-                            <img src="../pages/uploads/<?php echo htmlspecialchars($listing['image_path']); ?>" class="card-img" alt="<?php echo htmlspecialchars($listing['title']); ?>">
-                        <?php else: ?>
-                            <img src="../assets/images/placeholder.jpg" class="card-img" alt="No image available">
-                        <?php endif; ?>
+                <div class="col-md-3">
+                    <label for="location">Location</label>
+                    <input type="text" name="location" class="form-control" value="<?= htmlspecialchars($location ?? '') ?>">
+                </div>
+                <div class="col-md-3">
+                    <label for="min_price">Min Price</label>
+                    <input type="number" name="min_price" class="form-control" value="<?= $min_price ?? '' ?>">
+                </div>
+                <div class="col-md-3">
+                    <label for="max_price">Max Price</label>
+                    <input type="number" name="max_price" class="form-control" value="<?= $max_price ?? '' ?>">
+                </div>
+            </div>
+            <div class="mt-3 text-end">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <a href="listings.php" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Listings -->
+<div class="container my-4">
+    <h2 class="mb-4">Available Listings</h2>
+    <div class="row">
+        <?php if (empty($listings)): ?>
+            <div class="col-12">
+                <div class="alert alert-info">No listings found.</div>
+            </div>
+        <?php else: ?>
+            <?php foreach ($listings as $listing): ?>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="<?= $listing['image_path'] ? "../pages/uploads/" . htmlspecialchars($listing['image_path']) : "../assets/images/placeholder.jpg" ?>"
+                             class="card-img-top" alt="<?= htmlspecialchars($listing['title']) ?>">
                         <div class="card-body">
-                            <h3 class="card-title"><?php echo htmlspecialchars($listing['title']); ?></h3>
-                            <p class="card-text"><?php echo htmlspecialchars($listing['description']); ?></p>
-                            <p class="card-text"><strong>Category:</strong> <?php echo htmlspecialchars($listing['category_name']); ?></p>
-                            <p class="card-text"><strong>Price:</strong> $<?php echo number_format($listing['price_per_day'], 2); ?>/day</p>
-                            <p class="card-text"><strong>Location:</strong> <?php echo htmlspecialchars($listing['location']); ?></p>
-                            <p class="card-text"><strong>Owner:</strong> <?php echo htmlspecialchars($listing['owner_name']); ?></p>
-                            <a href="listing-details.php?id=<?php echo $listing['id']; ?>" class="btn btn-primary">View Details</a>
+                            <h5 class="card-title"><?= htmlspecialchars($listing['title']) ?></h5>
+                            <p class="card-text"><?= htmlspecialchars($listing['description']) ?></p>
+                            <p><strong>Category:</strong> <?= htmlspecialchars($listing['category_name']) ?></p>
+                            <p><strong>Price:</strong> $<?= number_format($listing['price_per_day'], 2) ?>/day</p>
+                            <p><strong>Location:</strong> <?= htmlspecialchars($listing['location']) ?></p>
+                            <p><strong>Owner:</strong> <?= htmlspecialchars($listing['owner_name']) ?></p>
+                            <a href="listing-details.php?id=<?= $listing['id'] ?>" class="btn btn-outline-primary">View Details</a>
+                            <?php if (isLoggedIn()): ?>
+                                <!-- Rent Button -->
+                                <button class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#rentModal<?= $listing['id'] ?>">Rent Now</button>
+                            <?php endif; ?>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
-    </section>
+                </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <p>RentalPlatform is your one-stop destination for finding the perfect rental items in your area.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="home.php">Home</a></li>
-                    <li><a href="listings.php">Listings</a></li>
-                    <li><a href="about.php">About</a></li>
-                    <li><a href="contact.php">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <ul>
-                    <li>Email: info@rentalplatform.com</li>
-                    <li>Phone: (123) 456-7890</li>
-                    <li>Address: 123 Rental St, City, Country</li>
-                </ul>
-            </div>
-        </div>
-    </footer>
+                <!-- Rent Modal -->
+                <div class="modal fade" id="rentModal<?= $listing['id'] ?>" tabindex="-1" aria-labelledby="rentModalLabel<?= $listing['id'] ?>" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <form action="rent.php" method="POST" class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Rent <?= htmlspecialchars($listing['title']) ?></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <div class="modal-body">
+                        <input type="hidden" name="listing_id" value="<?= $listing['id'] ?>">
+                        <input type="hidden" name="renter_id" value="<?= $_SESSION['user_id'] ?>">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/main.js"></script>
+                        <div class="mb-3">
+                          <label for="start_date" class="form-label">Start Date</label>
+                          <input type="date" name="start_date" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="end_date" class="form-label">End Date</label>
+                          <input type="date" name="end_date" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="total_price" class="form-label">Total Price</label>
+                          <input type="number" name="total_price" class="form-control" required>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Confirm Rental</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white p-4 mt-5">
+    <div class="row container mx-auto">
+        <div class="col-md-4">
+            <h5>About Us</h5>
+            <p>RentalPlatform helps users rent and list items with ease.</p>
+        </div>
+        <div class="col-md-4">
+            <h5>Quick Links</h5>
+            <ul class="list-unstyled">
+                <li><a href="home.php" class="text-white">Home</a></li>
+                <li><a href="listings.php" class="text-white">Listings</a></li>
+                <li><a href="about.php" class="text-white">About</a></li>
+                <li><a href="contact.php" class="text-white">Contact</a></li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h5>Contact</h5>
+            <ul class="list-unstyled">
+                <li>Email: info@rentalplatform.com</li>
+                <li>Phone: (123) 456-7890</li>
+                <li>Address: 123 Rental St, City, Country</li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/main.js"></script>
 </body>
-</html> 
+</html>

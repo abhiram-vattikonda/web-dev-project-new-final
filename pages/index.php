@@ -27,7 +27,19 @@ if (canListItems()) {
 
 // Get user's bookings
 $role = canListItems() ? 'owner' : 'renter';
-$user_bookings = getUserBookings($user_id, $role);
+$my_rented_items = getUserBookings($user_id, $role);
+// Get items that the user has rented (i.e., confirmed rentals)
+$my_rented_items = [];
+$query = "SELECT l.*, r.start_date, r.end_date, r.total_price,r.status
+          FROM bookings r 
+          JOIN listings l ON r.listing_id = l.id 
+          WHERE r.renter_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$my_rented_items = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +55,7 @@ $user_bookings = getUserBookings($user_id, $role);
     <!-- Header -->
     <header>
         <nav class="navbar">
-            <a href="listings.php" class="logo">RentalPlatform</a>
+            <a href="listings.php" class="logo">RentalEase</a>
             <div class="nav-links">
                 <a href="listings.php">Listings</a>
                 <a href="about.php">About</a>
@@ -180,7 +192,7 @@ $user_bookings = getUserBookings($user_id, $role);
                 <!-- Bookings Section -->
                 <section id="bookings" class="mb-5">
                     <h2>My Bookings</h2>
-                    <?php if (empty($user_bookings)): ?>
+                    <?php if (empty($my_rented_items)): ?>
                         <div class="alert alert-info">You don't have any bookings yet.</div>
                     <?php else: ?>
                         <div class="table-responsive">
@@ -196,7 +208,7 @@ $user_bookings = getUserBookings($user_id, $role);
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($user_bookings as $booking): ?>
+                                    <?php foreach ($my_rented_items as $booking): ?>
                                         <tr>
                                             <td><?php echo htmlspecialchars($booking['title']); ?></td>
                                             <td><?php echo date('Y-m-d', strtotime($booking['start_date'])); ?></td>
