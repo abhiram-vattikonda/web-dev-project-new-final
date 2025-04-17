@@ -76,7 +76,7 @@ function validateDateRange() {
 
     return true;
 }
-
+/*
 // Calculate total price
 function calculateTotalPrice() {
     const startDate = new Date(document.getElementById('start-date').value);
@@ -89,8 +89,23 @@ function calculateTotalPrice() {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     const totalPrice = diffDays * pricePerDay;
 
-    document.getElementById('total-price').textContent = `$${totalPrice.toFixed(2)}`;
+    document.getElementById('total_price').textContent = `$${totalPrice.toFixed(2)}`;
 }
+
+// Calculate total price for rental
+function calculateRentalPrice() {
+    const startDate = new Date(document.getElementById('start_date').value);
+    const endDate = new Date(document.getElementById('end_date').value);
+    const pricePerDay = parseFloat(document.getElementById('price_per_day').value);
+
+    if (!startDate || !endDate || !pricePerDay) return;
+
+    const diffTime = Math.abs(endDate - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const totalPrice = diffDays * pricePerDay;
+
+    document.getElementById('total_price').value = totalPrice.toFixed(2);
+}*/
 
 // Initialize date pickers
 function initDatePickers() {
@@ -152,5 +167,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const filterInputs = document.querySelectorAll('#category-filter, #location-filter, #min-price-filter, #max-price-filter');
     filterInputs.forEach(input => {
         input.addEventListener('change', filterListings);
+    });
+
+    // Add event listeners for rental price calculation
+    const startDateInputs = document.querySelectorAll('input[name="start_date"]');
+    const endDateInputs = document.querySelectorAll('input[name="end_date"]');
+
+    startDateInputs.forEach(input => {
+        input.addEventListener('change', calculateRentalPrice);
+    });
+
+    endDateInputs.forEach(input => {
+        input.addEventListener('change', calculateRentalPrice);
     });
 }); 
