@@ -104,7 +104,7 @@ $categories = getCategories();
                             <p><strong>Price:</strong> $<?= number_format($listing['price_per_day'], 2) ?>/day</p>
                             <p><strong>Location:</strong> <?= htmlspecialchars($listing['location']) ?></p>
                             <p><strong>Owner:</strong> <?= htmlspecialchars($listing['owner_name']) ?></p>
-                            <a href="listing-details.php?id=<?= $listing['id'] ?>" class="btn btn-outline-primary">View Details</a>
+                            <!-- <a href="listing-details.php?id=<?= $listing['id'] ?>" class="btn btn-outline-primary">View Details</a>
                             <?php if (isLoggedIn()): ?>
                                 <!-- Rent Button -->
                                 <button class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#rentModal<?= $listing['id'] ?>">Rent Now</button>
@@ -124,20 +124,24 @@ $categories = getCategories();
                       <div class="modal-body">
                         <input type="hidden" name="listing_id" value="<?= $listing['id'] ?>">
                         <input type="hidden" name="renter_id" value="<?= $_SESSION['user_id'] ?>">
+                        <input type="hidden" id="price_per_day" value="<?= $listing['price_per_day'] ?>">
 
                         <div class="mb-3">
                           <label for="start_date" class="form-label">Start Date</label>
-                          <input type="date" name="start_date" class="form-control" required>
+                          <input type="date" name="start_date" id="start_date" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                           <label for="end_date" class="form-label">End Date</label>
-                          <input type="date" name="end_date" class="form-control" required>
+                          <input type="date" name="end_date" id="end_date" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                           <label for="total_price" class="form-label">Total Price</label>
-                          <input type="number" name="total_price" class="form-control" required>
+                          <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="total_price" id="total_price" class="form-control" readonly>
+                          </div>
                         </div>
                       </div>
                       <div class="modal-footer">
@@ -181,5 +185,42 @@ $categories = getCategories();
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/main.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to date inputs
+    const startDateInputs = document.querySelectorAll('input[name="start_date"]');
+    const endDateInputs = document.querySelectorAll('input[name="end_date"]');
+    
+    startDateInputs.forEach(input => {
+        input.addEventListener('change', calculateTotalPrice);
+    });
+    
+    endDateInputs.forEach(input => {
+        input.addEventListener('change', calculateTotalPrice);
+    });
+    
+    function calculateTotalPrice(event) {
+        const modal = event.target.closest('.modal');
+        const startDate = new Date(modal.querySelector('input[name="start_date"]').value);
+        const endDate = new Date(modal.querySelector('input[name="end_date"]').value);
+        const pricePerDay = parseFloat(modal.querySelector('input[id="price_per_day"]').value);
+        const totalPriceInput = modal.querySelector('input[name="total_price"]');
+        
+        if (startDate && endDate && !isNaN(pricePerDay)) {
+            if (endDate >= startDate) {
+                const diffTime = Math.abs(endDate - startDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Include both start and end dates
+                const totalPrice = diffDays * pricePerDay;
+                totalPriceInput.value = totalPrice.toFixed(2);
+            } else {
+                totalPriceInput.value = '';
+                alert('End date must be after start date');
+            }
+        }
+    }
+});
+</script>
+
 </body>
 </html>

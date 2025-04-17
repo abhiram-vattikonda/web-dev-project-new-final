@@ -56,25 +56,11 @@ CREATE TABLE IF NOT EXISTS bookings (
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     total_price DECIMAL(10,2) NOT NULL,
-    status ENUM('pending', 'approved', 'rejected', 'completed') DEFAULT 'pending',
+    status ENUM('pending', 'booked') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (listing_id) REFERENCES listings(id),
     FOREIGN KEY (renter_id) REFERENCES users(id)
-);
-
--- Messages table
-CREATE TABLE IF NOT EXISTS messages (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    sender_id INT NOT NULL,
-    receiver_id INT NOT NULL,
-    booking_id INT,
-    message TEXT NOT NULL,
-    is_read BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (sender_id) REFERENCES users(id),
-    FOREIGN KEY (receiver_id) REFERENCES users(id),
-    FOREIGN KEY (booking_id) REFERENCES bookings(id)
 );
 
 -- Insert default categories

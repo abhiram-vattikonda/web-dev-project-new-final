@@ -80,8 +80,8 @@ $my_rented_items = mysqli_fetch_all($result, MYSQLI_ASSOC);
                 <?php if (canRentItems()): ?>
                     <li><a href="#bookings">My Bookings</a></li>
                 <?php endif; ?>
-                <li><a href="#messages">Messages</a></li>
-                <li><a href="#settings">Settings</a></li>
+                <!--<li><a href="#messages">Messages</a></li>
+                <li><a href="#settings">Settings</a></li>-->
             </ul>
         </div>
 
@@ -204,7 +204,7 @@ $my_rented_items = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                         <th>End Date</th>
                                         <th>Total Price</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        <!--<th>Actions</th>-->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -215,11 +215,11 @@ $my_rented_items = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                             <td><?php echo date('Y-m-d', strtotime($booking['end_date'])); ?></td>
                                             <td>$<?php echo number_format($booking['total_price'], 2); ?></td>
                                             <td><?php echo ucfirst($booking['status']); ?></td>
-                                            <td>
+                                            <!--<td>
                                                 <?php if ($booking['status'] === 'pending'): ?>
                                                     <a href="cancel-booking.php?id=<?php echo $booking['id']; ?>" class="btn btn-danger btn-sm">Cancel</a>
                                                 <?php endif; ?>
-                                            </td>
+                                            </td>-->
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
